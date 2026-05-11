@@ -3,10 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { Box, Button, TextField, Typography, Link } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import api from "../api/axios";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const navigate = useNavigate();
   const theme = useTheme();
+  const { login } = useAuth();
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -83,7 +85,10 @@ const Login = () => {
         password,
       });
 
-      localStorage.setItem("token", response.data.token);
+      const token = response.data.token;
+
+      await login(token);
+
       navigate("/dashboard");
     } catch (error) {
       console.log(error);

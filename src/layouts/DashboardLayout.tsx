@@ -1,12 +1,9 @@
 import { Box } from "@mui/material";
+import { Outlet } from "react-router-dom";
 import Header from "../components/Header";
 import SidebarMenu from "../components/SidebarMenu";
 
-type DashboardLayoutProps = {
-  children: React.ReactNode;
-};
-
-const DashboardLayout = ({ children }: DashboardLayoutProps) => {
+const DashboardLayout = () => {
   return (
     <Box>
       <Header />
@@ -23,7 +20,7 @@ const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             minHeight: "calc(100vh - 64px)",
           }}
         >
-          {children}
+          <Outlet />
         </Box>
       </Box>
     </Box>

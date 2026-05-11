@@ -348,36 +348,233 @@ MainContent
 - Separación visual de contenido
 - Escalabilidad de vistas privadas
 
+
 ---
+ ## Documentación Frontend: Autenticación, Rutas Privadas y Layout Administrativo
 
-# Estado actual del frontend
-
-El proyecto frontend cuenta actualmente con:
-
-- Arquitectura modular escalable
-- Integración con backend Node.js
-- Sistema inicial de autenticación JWT
-- Navegación SPA
-- Layout reutilizable
-- Componentes reutilizables
-- Sistema global de temas con Material UI
-- Separación clara de responsabilidades
+Esta documentación describe el proceso realizado en el frontend de la aplicación **App** para organizar el sistema de rutas, proteger vistas privadas, implementar autenticación global con Context API y mostrar la información del usuario autenticado en el Header.
 
 ---
 
+## 1. Configuración correcta de `main.tsx`
+
+El archivo `main.tsx` se encarga de envolver toda la aplicación con los proveedores globales necesarios.
+
+```tsx
+ReactDOM.createRoot(document.getElementById("root")!).render(
+  <React.StrictMode>
+    <BrowserRouter>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <AuthProvider>
+          <App />
+        </AuthProvider>
+      </ThemeProvider>
+    </BrowserRouter>
+  </React.StrictMode>
+);
+```
+
+### Función de cada elemento
+
+| Elemento | Función |
+|---|---|
+| `BrowserRouter` | Permite usar rutas en React Router DOM. |
+| `ThemeProvider` | Aplica el tema global de Material UI. |
+| `CssBaseline` | Normaliza estilos base de Material UI. |
+| `AuthProvider` | Hace disponible la autenticación en toda la aplicación. |
+| `App` | Componente principal de la aplicación. |
+
 ---
 
-# Próximas mejoras planificadas
+## 2. Organización de rutas en `AppRoutes.tsx`
 
-Las siguientes funcionalidades quedaron planificadas para próximos commits:
+El archivo `AppRoutes.tsx` contiene la estructura principal de navegación.
 
-- Protección completa de rutas privadas
-- Persistencia de sesión autenticada
-- Context API para autenticación global
-- Mostrar información del usuario autenticado en Header
-- Implementación de roles y permisos
-- Mejoras visuales responsivas
-- Manejo global de errores HTTP
-- Interceptores Axios para JWT
-- Logout automático por expiración de token
-- Optimización de estructura modular
+```tsx
+import { Routes, Route } from "react-router-dom";
+import Login from "../pages/Login";
+import Register from "../pages/Register";
+import Dashboard from "../pages/Dashboard";
+import DashboardLayout from "../layouts/DashboardLayout";
+import PrivateRoute from "./PrivateRoute";
+
+const AppRoutes = () => {
+  return (
+    <Routes>
+      {/* Rutas públicas */}
+      <Route path="/" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+
+      {/* Rutas privadas */}
+      <Route element={<PrivateRoute />}>
+        <Route element={<DashboardLayout />}>
+          <Route path="/dashboard" element={<Dashboard />} />
+        </Route>
+      </Route>
+    </Routes>
+  );
+};
+
+export default AppRoutes;
+```
+
+### Tipos de rutas
+
+#### Rutas públicas
+
+Las rutas públicas son aquellas que cualquier usuario puede visitar sin iniciar sesión.
+
+```tsx
+<Route path="/" element={<Login />} />
+<Route path="/register" element={<Register />} />
+```
+
+Estas rutas corresponden a:
+
+```txt
+/          → Login
+/register  → Register
+```
+
+#### Rutas privadas
+
+Las rutas privadas requieren que el usuario esté autenticado.
+
+```tsx
+<Route element={<PrivateRoute />}>
+  <Route element={<DashboardLayout />}>
+    <Route path="/dashboard" element={<Dashboard />} />
+  </Route>
+</Route>
+```
+
+La estructura funciona así:
+
+```txt
+PrivateRoute
+└── DashboardLayout
+    └── Dashboard
+```
+
+---
+
+## 3. Creación de `PrivateRoute`
+
+El componente `PrivateRoute` funciona como un guardián de rutas privadas.
+
+Su responsabilidad es verificar si el usuario está autenticado antes de permitir el acceso a una vista privada.
+
+### ¿Cómo funciona?
+
+1. Obtiene el estado de autenticación desde `AuthContext`.
+2. Si la aplicación está cargando, muestra un `CircularProgress`.
+3. Si el usuario no está autenticado, lo redirige al Login.
+4. Si el usuario está autenticado, permite cargar la ruta privada mediante `Outlet`.
+
+---
+
+## 4. Importancia de `Outlet`
+
+`Outlet` es un componente de React Router DOM que permite renderizar rutas hijas.
+
+En `PrivateRoute`, este código:
+
+```tsx
+return <Outlet />;
+```
+
+significa:
+
+```txt
+Si el usuario está autenticado, muestra la ruta hija.
+```
+
+En `DashboardLayout`, `Outlet` indica dónde se debe mostrar el contenido interno del dashboard.
+
+---
+
+## 5. Creación del layout administrativo `DashboardLayout`
+
+El `DashboardLayout` permite tener una estructura reutilizable para todas las páginas privadas de la aplicación.
+
+### Estructura visual del layout
+
+```txt
+DashboardLayout
+├── SidebarMenu
+├── Header
+└── Contenido dinámico
+    └── Outlet
+```
+
+Esto permite que más adelante se puedan agregar nuevas páginas privadas como:
+
+```txt
+Usuarios
+Roles
+Productos
+Clientes
+Ventas
+Reportes
+Configuración
+```
+
+sin repetir el Header ni el Sidebar en cada página.
+
+---
+
+## 6. Creación de `AuthContext`
+
+El `AuthContext` centraliza toda la lógica relacionada con la autenticación del usuario.
+
+Archivo creado:
+
+```txt
+src/context/AuthContext.tsx
+```
+
+### Estados y funciones del contexto
+
+| Elemento | Función |
+|---|---|
+| `user` | Guarda la información del usuario autenticado. |
+| `token` | Guarda el JWT del usuario. |
+| `loading` | Indica si se está verificando la sesión. |
+| `login()` | Guarda el token y actualiza el estado global. |
+| `logout()` | Elimina el token y cierra la sesión. |
+| `isAuthenticated` | Indica si el usuario tiene sesión activa. |
+
+---
+
+## 7. Uso de `login` en la página Login
+
+En el archivo `Login.tsx`, el token se maneja mediante el contexto.
+
+Ejemplo:
+
+```tsx
+const { login } = useAuth();
+
+const handleSubmit = async (e: React.FormEvent) => {
+  e.preventDefault();
+
+  try {
+    const response = await api.post("/login", {
+      email,
+      password,
+    });
+
+    await login(response.data.token);
+    navigate("/dashboard");
+  } catch (error) {
+    console.error("Error al iniciar sesión:", error);
+  }
+};
+```
+
+### Ventaja
+
+La autenticación queda centralizada y cualquier componente puede consultar el estado del usuario mediante `useAuth()`.
+
+---

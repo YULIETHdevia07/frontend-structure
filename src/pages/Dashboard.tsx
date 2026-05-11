@@ -1,9 +1,8 @@
 import { Typography } from "@mui/material";
-import DashboardLayout from "../layouts/DashboardLayout";
 
 const Dashboard = () => {
   return (
-    <DashboardLayout>
+    <>
       <Typography
         sx={{
           fontSize: "1.8rem",
@@ -17,7 +16,7 @@ const Dashboard = () => {
       <Typography>
         Bienvenido. Aquí se mostrará el contenido principal del sistema.
       </Typography>
-    </DashboardLayout>
+    </>
   );
 };
 
