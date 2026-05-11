@@ -1,6 +1,0 @@
-frontend/
-├── src/
-├── public/
-├── package.json
-├── vite.config.ts
-└── tsconfig.json
