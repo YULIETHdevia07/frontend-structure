@@ -134,13 +134,250 @@ src/
 
 ---
 
-# Objetivo de la estructura
+# Desarrollo Frontend — Autenticación y Layout
 
-La estructura frontend fue diseñada para:
+## 5. Configuración de Material UI
 
-- Mantener organización del código
-- Facilitar escalabilidad
-- Separar responsabilidades
-- Mejorar mantenimiento del proyecto
-- Preparar integración con JWT y backend
-- Permitir crecimiento modular del sistema
+Se instaló Material UI para la construcción de interfaces modernas y reutilizables.
+
+### Dependencias instaladas
+
+- @mui/material
+- @emotion/react
+- @emotion/styled
+
+### Comando ejecutado
+
+```bash
+npm install @mui/material @emotion/react @emotion/styled
+```
+
+---
+
+## 6. Implementación de tema global
+
+Se implementó el sistema de temas de Material UI para centralizar colores, tipografía y estilos globales del proyecto.
+
+### Archivo creado
+
+```txt
+src/theme/theme.ts
+```
+
+### Funcionalidades implementadas
+
+- Paleta de colores global
+- Configuración de colores primarios
+- Configuración de colores secundarios
+- Colores de fondo
+- Colores de texto
+- Configuración tipográfica global
+
+---
+
+## 7. Integración ThemeProvider
+
+Se configuró `ThemeProvider` en la aplicación para permitir acceso global al tema de Material UI.
+
+### Archivo modificado
+
+```txt
+src/main.tsx
+```
+
+### Funcionalidades implementadas
+
+- Integración de tema global
+- Uso de CssBaseline
+- Acceso global a palette
+- Centralización visual de estilos
+
+---
+
+## 8. Desarrollo pantalla Login
+
+Se desarrolló la pantalla de autenticación para el inicio de sesión de usuarios.
+
+### Archivo creado/modificado
+
+```txt
+src/pages/Login.tsx
+```
+
+### Funcionalidades implementadas
+
+- Inicio de sesión
+- Manejo de estados React
+- Consumo de API mediante Axios
+- Validación de formulario
+- Almacenamiento de token JWT
+- Redirección al dashboard
+- Integración Material UI
+- Diseño visual profesional
+- Uso de tema global
+
+---
+
+## 9. Desarrollo pantalla Register
+
+Se desarrolló la pantalla de registro de usuarios.
+
+### Archivo creado/modificado
+
+```txt
+src/pages/Register.tsx
+```
+
+### Funcionalidades implementadas
+
+- Registro de usuarios
+- Manejo de formulario React
+- Consumo endpoint register
+- Validación inicial
+- Redirección al login
+- Integración visual Material UI
+- Uso de tema global
+- Navegación entre pantallas
+
+---
+
+## 10. Configuración Axios
+
+Se configuró Axios para centralizar la conexión con el backend.
+
+### Archivo creado
+
+```txt
+src/api/axios.ts
+```
+
+### Funcionalidades implementadas
+
+- Conexión centralizada con backend
+- Configuración baseURL
+- Preparación para JWT
+- Reutilización global de peticiones HTTP
+
+---
+
+## 11. Implementación React Router
+
+Se implementó React Router para manejar la navegación SPA del frontend.
+
+### Archivo creado
+
+```txt
+src/routes/AppRoutes.tsx
+```
+
+### Funcionalidades implementadas
+
+- Navegación SPA
+- Rutas públicas
+- Rutas privadas iniciales
+- Integración de páginas principales
+
+### Rutas actuales
+
+```txt
+/
+/register
+/dashboard
+```
+
+---
+
+## 12. Desarrollo layout reutilizable
+
+Se implementó una estructura reutilizable para las vistas privadas del sistema.
+
+### Archivos creados
+
+```txt
+src/layouts/DashboardLayout.tsx
+src/components/Header.tsx
+src/components/SidebarMenu.tsx
+```
+
+---
+
+# 13. Implementación Header
+
+El componente `Header` se creó como una estructura reutilizable para la parte superior del sistema, dejando preparada la integración futura de información del usuario autenticado.
+
+### Funcionalidades implementadas
+
+- Barra superior reutilizable
+- Diseño reutilizable
+- Integración visual con el layout principal
+
+---
+
+## 14. Implementación SidebarMenu
+
+El componente `SidebarMenu` se creó para manejar módulos, submódulos y opciones del sistema.
+
+### Funcionalidades implementadas
+
+- Menú lateral dinámico
+- Módulos del sistema
+- Submódulos
+- Opciones de navegación
+- Navegación reutilizable
+- Preparación para roles y permisos
+
+---
+
+## 15. Implementación DashboardLayout
+
+El layout `DashboardLayout` se creó para reutilizar la estructura privada del sistema.
+
+### Estructura implementada
+
+```txt
+Header
+SidebarMenu
+MainContent
+```
+
+### Funcionalidades implementadas
+
+- Header reutilizable
+- Sidebar reutilizable
+- Contenedor dinámico de páginas
+- Separación visual de contenido
+- Escalabilidad de vistas privadas
+
+---
+
+# Estado actual del frontend
+
+El proyecto frontend cuenta actualmente con:
+
+- Arquitectura modular escalable
+- Integración con backend Node.js
+- Sistema inicial de autenticación JWT
+- Navegación SPA
+- Layout reutilizable
+- Componentes reutilizables
+- Sistema global de temas con Material UI
+- Separación clara de responsabilidades
+
+---
+
+---
+
+# Próximas mejoras planificadas
+
+Las siguientes funcionalidades quedaron planificadas para próximos commits:
+
+- Protección completa de rutas privadas
+- Persistencia de sesión autenticada
+- Context API para autenticación global
+- Mostrar información del usuario autenticado en Header
+- Implementación de roles y permisos
+- Mejoras visuales responsivas
+- Manejo global de errores HTTP
+- Interceptores Axios para JWT
+- Logout automático por expiración de token
+- Optimización de estructura modular
